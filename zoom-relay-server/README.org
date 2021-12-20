@@ -1,0 +1,25 @@
+#+TITLE: Zoom Relay - Server
+#+AUTHOR: Fikri Rahmat Nurhidayat
+#+EMAIL: FikriRNurhidayat@gmail.com
+
+Zoom Relay Server is being used to listen to Zoom Webhook for this following events:
+- Meeting
+  - Start Meeting
+  - Participant/Host joined meeting
+  - Participant/Host left meeting
+  - Meeting Sharing Started
+  - Meeting Sharing Ended
+- Chat Message
+  - Chat Message Sent
+  - Chat Message Updated
+  - Chat Message Replied
+
+* Dependency
+
+This repository only needs two dependencies:
+- ~express~ as HTTP Server Framework
+- ~morgan~ as HTTP Logger
+
+* How to run?
+
+It's simple, you only need to install the package, then run ~npm start~

@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+echo "Checking out to zoom-relay-client!"
+cd zoom-relay-client
+
+echo "Installing dependencies"
+yarn install
+
+echo "Building"
+yarn build
+
+echo "Moving build directory to zoom-relay-server"
+mv ./dist/* ../zoom-relay-server/public/

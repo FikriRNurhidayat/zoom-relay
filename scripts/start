@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+cd zoom-relay-server
+yarn start

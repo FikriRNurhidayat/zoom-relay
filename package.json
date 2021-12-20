@@ -1,0 +1,11 @@
+{
+  "name": "zoom-relay",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Fikri Rahmat Nurhidayat <fikrirnurhidayat@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "scripts/build",
+    "start": "scripts/start"
+  }
+}
