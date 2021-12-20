@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "develop": "vite",
-    "build": "vite build",
+    "build": "vite build && rm -rf ../zoom-relay-server/public/* && mv ./dist/* ../zoom-relay-server/public",
     "preview": "vite preview"
   },
   "dependencies": {

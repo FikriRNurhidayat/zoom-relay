@@ -5,8 +5,8 @@
   "author": "Fikri Rahmat Nurhidayat <fikrirnurhidayat@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "scripts/build",
-    "start": "scripts/start"
+    "build": "yarn --cwd zoom-relay-client build",
+    "start": "yarn --cwd zoom-relay-server start"
   },
   "engines": {
     "node": "14.x"
