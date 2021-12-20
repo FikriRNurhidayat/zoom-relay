@@ -5,9 +5,11 @@
   "author": "Fikri Rahmat Nurhidayat <fikrirnurhidayat@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "yarn --cwd zoom-relay-client build",
-    "start": "yarn --cwd zoom-relay-server start"
+    "build": "yarn workspace client build",
+    "start": "yarn workspace server start"
   },
+  "private": true,
+  "workspaces": ["client", "server"],
   "engines": {
     "node": "14.x"
   }
