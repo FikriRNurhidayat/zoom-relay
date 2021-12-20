@@ -2,11 +2,11 @@
   "name": "zoom-relay-client",
   "version": "0.0.0",
   "scripts": {
-    "develop": "vite",
+    "develop": "./node_modules/.bin/vite",
     "prebuild": "yarn",
-    "build": "vite build",
+    "build": "./node_modules/.bin/vite build",
     "postbuild": "rm -rf ../zoom-relay-server/public/* && mv ./dist/* ../zoom-relay-server/public",
-    "preview": "vite preview"
+    "preview": "./node_modules/.bin/vite preview"
   },
   "dependencies": {
     "react": "^17.0.2",
