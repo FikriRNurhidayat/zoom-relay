@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "prestart": "yarn",
     "start": "node index.js",
     "develop": "nodemon index.js"
   },
