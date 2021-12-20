@@ -26,17 +26,8 @@ app.post("/api/v1/events", (req, res) => {
   res.status(204).end();
 });
 
-// Not found handler
-app.use((req, res) =>
-  res.status(404).json({
-    status: "FAIL",
-    data: {
-      message: "Route not found!",
-      path: req.url,
-      method: req.method,
-    },
-  })
-);
+// Default handler
+app.use((req, res) => res.redirect("/"));
 
 // Exception handler
 app.use((err, req, res, next) =>
