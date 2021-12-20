@@ -1,6 +1,10 @@
 import { useEffect, Fragment } from "react";
 import { useSearchParams } from "react-router-dom";
-import { AUTHORIZATION_URL } from "../config/constant";
+import {
+  AUTHORIZATION_URL,
+  OAUTH_CLIENT_ID,
+  OAUTH_CLIENT_SECRET,
+} from "../config/constant";
 import { getAccessToken } from "../networks/zoom";
 
 export default function App() {

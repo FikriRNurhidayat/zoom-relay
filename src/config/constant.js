@@ -1,5 +1,5 @@
-export const OAUTH_CLIENT_SECRET = import.meta.env.OAUTH_CLIENT_SECRET;
-export const OAUTH_CLIENT_ID = import.meta.env.OAUTH_CLIENT_ID;
+export const OAUTH_CLIENT_SECRET = import.meta.env.VITE_APP_OAUTH_CLIENT_SECRET;
+export const OAUTH_CLIENT_ID = import.meta.env.VITE_APP_OAUTH_CLIENT_ID;
 export const OAUTH_REDIRECT_URL =
   import.meta.env.OAUTH_REDIRECT_URL || "https://zoom-relay.herokuapp.com";
 export const AUTHORIZATION_URL =
