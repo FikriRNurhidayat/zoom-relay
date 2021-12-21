@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const path = require("path");
 const axios = require("axios");
 const cors = require("cors");
+const EventEmitter = require("events");
 
 // Get port from environment variable
 const {
@@ -22,9 +23,11 @@ const ZOOM_AUTHORIZATION_TOKEN_BUFFER = Buffer.from(
 const ZOOM_AUTHORIZATION_TOKEN =
   ZOOM_AUTHORIZATION_TOKEN_BUFFER.toString("base64");
 const PUBLIC_DIRECTORY = path.resolve(__dirname, "public");
+const WEBHOOK_EVENT_NAME = "webhook.received";
 
 // Initialize express application
 const app = express();
+const event = new EventEmitter();
 
 // Allow cors for local development
 if (NODE_ENV === "development") app.use(cors());
@@ -41,20 +44,43 @@ app.use(express.json());
 // POST /api/v1/events
 // Receive event from the webhook
 app.post("/api/v1/events", (req, res) => {
-  console.log("Request Header:", req.headers);
-  console.log("Request Body:", req.body);
+  console.log("[DEBUG]:", req.headers);
+  console.log("[DEBUG]:", req.body);
 
+  const eventName = createEventName(
+    WEBHOOK_EVENT_NAME,
+    req.body?.payload?.account_id
+  );
+  event.emit(eventName, req.body);
   res.status(204).end();
+});
+
+// GET /api/v1/events/watch
+// Subscribe to zoom events
+app.get("/api/v1/events/watch", authorize, (req, res) => {
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.flushHeaders();
+
+  const eventName = createEventName(WEBHOOK_EVENT_NAME, req.user.account_id);
+
+  event.on(eventName, (e) => {
+    console.log("[DEBUG]:", `${e.event} received!`);
+    res.write(`data: ${JSON.stringify(e)}\n\n`);
+  });
+
+  // Stop sending event on connection closed
+  res.on("close", () => {
+    event.removeAllListeners(eventName);
+    res.end();
+  });
 });
 
 // POST /api/v1/zoom/oauth/token
 // See more: https://marketplace.zoom.us/docs/guides/auth/oauth
 app.post("/api/v1/zoom/auth/token", (req, res) => {
   const body = new URLSearchParams();
-
-  console.log("[DEBUG]:", ZOOM_OAUTH_CLIENT_ID);
-  console.log("[DEBUG]:", ZOOM_OAUTH_CLIENT_SECRET);
-  console.log("[DEBUG]:", ZOOM_AUTHORIZATION_TOKEN);
 
   body.append("code", req.body.code);
   body.set("grant_type", ZOOM_AUTHENTICATION_GRANT_TYPE);
@@ -69,45 +95,19 @@ app.post("/api/v1/zoom/auth/token", (req, res) => {
     })
     .then((response) => {
       console.log("[INFO]:", "Token retrieved!");
-      console.debug("[DEBUG]:", response.data);
-
       res.status(201).json(response.data);
     })
     .catch((err) => {
       console.error("[ERROR]:", err.message);
-      console.debug("[DEBUG]:", err.response.status);
-      console.debug("[DEBUG]:", err.response.data);
-      console.debug("[DEBUG]:", err.stack);
-
       res.status(401).json(err.response.data);
     });
 });
 
 // GET /api/v1/zoom/users/me
 // See more: https://marketplace.zoom.us/docs/guides/auth/oauth
-app.get("/api/v1/zoom/users/me", (req, res) => {
-  console.log(req.headers);
-
-  axios
-    .get(ZOOM_GET_USER_URL, {
-      headers: {
-        Authorization: req.headers.authorization,
-      },
-    })
-    .then((response) => {
-      console.log("[INFO]:", "User retrieved!");
-      console.debug("[DEBUG]:", response.data);
-
-      res.status(200).json(response.data);
-    })
-    .catch((err) => {
-      console.error("[ERROR]:", err.message);
-      console.debug("[DEBUG]:", err.response.status);
-      console.debug("[DEBUG]:", err.response.data);
-      console.debug("[DEBUG]:", err.stack);
-
-      res.status(401).json(err.response.data);
-    });
+app.get("/api/v1/zoom/users/me", authorize, (req, res) => {
+  console.log("[INFO]:", "User retrieved!");
+  res.status(200).json(req.user);
 });
 
 // Default handler
@@ -125,6 +125,32 @@ app.use((err, req, res, next) =>
   })
 );
 
+// Start server
 app.listen(PORT, () => {
   console.log("Listening on http://localhost:" + PORT);
 });
+
+// Some logic goes here
+function createEventName(name, accountId) {
+  return `${name}:${accountId}`;
+}
+
+// Middlewares
+function authorize(req, res, next) {
+  const authorizationHeader =
+    req.headers.authorization || `Bearer ${req.query.token}`;
+  axios
+    .get(ZOOM_GET_USER_URL, {
+      headers: {
+        Authorization: authorizationHeader,
+      },
+    })
+    .then((response) => {
+      req.user = response.data;
+      next();
+    })
+    .catch((err) => {
+      console.error("[ERROR]:", err.message);
+      res.status(401).json(err.response.data);
+    });
+}

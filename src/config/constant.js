@@ -20,6 +20,10 @@ export const API_HOST =
 export const ACCESS_TOKEN_KEY = "ACCESS_TOKEN";
 export const REFRESH_TOKEN_KEY = "REFRESH_TOKEN";
 export const EXPIRES_IN_KEY = "EXPIRES_IN";
+export const EVENTS_KEY = "EVENTS";
 export const ZOOM_NAME_KEY = "ZOOM_NAME";
 export const ZOOM_ID_KEY = "ZOOM_ID";
 export const ZOOM_ACCOUNT_ID_KEY = "ZOOM_ACCOUNT_ID";
+
+// Event URLs
+export const ZOOM_EVENT_STREAM_URL = "/api/v1/events/watch";

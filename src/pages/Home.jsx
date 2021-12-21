@@ -1,5 +1,8 @@
 import { useEffect, Fragment } from "react";
 import { useSearchParams } from "react-router-dom";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import style from "./Home.module.css";
 import useLocalStorage from "../hooks/useLocalStorage";
 import {
   AUTHORIZATION_URL,
@@ -9,8 +12,27 @@ import {
   ZOOM_NAME_KEY,
   ZOOM_ID_KEY,
   ZOOM_ACCOUNT_ID_KEY,
+  EVENTS_KEY,
 } from "../config/constant";
-import { getAccessToken, getCurrentUser } from "../networks/backend";
+import { getAccessToken, getCurrentUser, listen } from "../networks/backend";
+
+dayjs.extend(relativeTime);
+
+function getAction(action) {
+  return action.replace(/_/g, " ");
+}
+
+function getObject(resource) {
+  return resource.replace(/_/g, " ");
+}
+
+function getMailToURL(email) {
+  return "mailto:" + email;
+}
+
+function getRelativeDate(timestamp) {
+  return dayjs(timestamp).fromNow();
+}
 
 export default function App() {
   const [token, setToken] = useLocalStorage(ACCESS_TOKEN_KEY, null);
@@ -25,6 +47,7 @@ export default function App() {
     ZOOM_ACCOUNT_ID_KEY,
     null
   );
+  const [events, setEvents] = useLocalStorage(EVENTS_KEY, []);
   const [query] = useSearchParams(location.search);
 
   // Set token
@@ -60,6 +83,29 @@ export default function App() {
     }
   }, [token]);
 
+  // Setup event listener
+  useEffect(() => {
+    const event = listen();
+    event.onmessage = onMessage;
+
+    return event.close;
+  }, []);
+
+  function onMessage(e) {
+    const { event, event_ts: timestamp, payload } = JSON.parse(e.data);
+    const [resource, action] = event.split(".");
+
+    setEvents([
+      ...events,
+      {
+        object: getObject(resource),
+        action: getAction(action),
+        actor: payload.operator,
+        timestamp,
+      },
+    ]);
+  }
+
   return (
     <Fragment>
       <header>
@@ -83,6 +129,22 @@ export default function App() {
             <p>Let's see what we can do here, {zoomName}!</p>
           </Fragment>
         )}
+
+        <ul>
+          {events.map(({ actor, action, object, timestamp }, index) => (
+            <li key={index}>
+              <div className={style.timelineContainer}>
+                <div className={style.timelineContent}>
+                  <a href={getMailToURL(actor)}>{actor}</a> <b>{action}</b>{" "}
+                  <span>{object}</span>
+                </div>
+                <div className={style.timelineDate}>
+                  {getRelativeDate(timestamp)}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
       </main>
 
       <footer>

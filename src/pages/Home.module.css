@@ -1,0 +1,10 @@
+.timelineContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.timelineDate {
+  color: var(--preformatted);
+  font-size: 0.75rem;
+}
