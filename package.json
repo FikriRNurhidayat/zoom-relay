@@ -3,21 +3,25 @@
   "version": "0.0.0",
   "scripts": {
     "start": "node server/index.js",
-    "develop": "vite",
+    "develop:client": "vite",
+    "develop:server": "nodemon -q -r dotenv/config server/index.js",
     "build": "vite build",
     "postbuild": "rm -rf ./server/public && mv ./dist ./server/public",
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^0.24.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "morgan": "^1.10.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "6",
-    "simpledotcss": "^1.0.5",
-    "express": "^4.17.2",
-    "morgan": "^1.10.0"
+    "simpledotcss": "^1.0.5"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^1.0.7",
+    "dotenv": "^10.0.0",
     "vite": "^2.7.2"
   },
   "engines": {
