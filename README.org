@@ -1,3 +1,41 @@
 #+TITLE: Zoom Relay
 #+AUTHOR: Fikri Rahmat Nurhidayat
 #+EMAIL: FikriRNurhidayat@gmail.com
+
+This repository contain source for https://zoom-relay.herokuapp.com.
+This application will relay your zoom event to the web, it's event listenable via Server Sent Event, not perfect tho, but it works (kind of).
+
+* How to run it?
+
+Just basic git clone will do, but you need some of these thing:
+- Zoom's OAuth Client ID
+- Zoom's OAuth Client Secret
+- Zoom's OAuth Redirect URL
+
+Which will you set via environment variable:
+
+#+begin_src shell
+VITE_APP_OAUTH_CLIENT_ID=${YOUR_CLIENT_ID}
+VITE_APP_OAUTH_CLIENT_SECRET=${YOUR_CLIENT_SECRET}
+VITE_APP_OAUTH_REDIRECT_URL=${YOUR_REDIRECT_URL}
+#+end_src
+
+And here's how you get those thing: https://marketplace.zoom.us/docs/guides/auth/oauth, read it don't be lazy.
+
+Then you can just simply run:
+
+#+begin_src shell
+yarn build
+yarn start
+#+end_src
+
+Or if you want to start it as development mode, run this:
+
+#+begin_src shell
+yarn develop
+#+end_src
+
+* Screenshots
+
+#+ATTR_HTML: :width 100%
+[[./screenshots/home.png]]
