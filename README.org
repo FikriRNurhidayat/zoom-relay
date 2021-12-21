@@ -46,6 +46,6 @@ yarn develop
 [[./screenshots/home.png]]
 
 * Roadmap(ish)
-- [ ] Improve server sent event implementation both on client and server
-- [ ] Webhook API
-- [ ] Webhook Management
+- Improve server sent event implementation both on client and server
+- Webhook API
+- Webhook Management
