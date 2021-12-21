@@ -35,7 +35,17 @@ Or if you want to start it as development mode, run this:
 yarn develop
 #+end_src
 
+* Recipes
+- [[https://vitejs.dev/guide/#scaffolding-your-first-vite-project][Vite]]
+- [[https://reactjs.org/][React]]
+- [[https://expressjs.com/][ExpressJS]]
+- [[https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events][Server Sent Event]]
 * Screenshots
 
 #+ATTR_HTML: :width 100%
 [[./screenshots/home.png]]
+
+* Roadmap(ish)
+- [ ] Improve server sent event implementation both on client and server
+- [ ] Webhook API
+- [ ] Webhook Management
